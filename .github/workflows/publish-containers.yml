@@ -31,7 +31,7 @@ jobs:
         id: set-env
           # ## echo "::set-output name=container_registry_base_uri::$(echo $CONTAINER_REGISTRY_BASE_URI)"
         run: |
-          echo "::set-output name=container_registry_base_uri::$(echo ${{env.REGISTRY}}:${{env.IMAGE_NAME}})"
+          echo "::set-output name=container_registry_base_uri::$(echo ${{env.REGISTRY}}/${{env.IMAGE_NAME}})"
   build-docker-image:
     name: Build Docker Images
     needs: [init-env]
