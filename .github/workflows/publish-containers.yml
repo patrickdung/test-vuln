@@ -136,6 +136,10 @@ jobs:
             platform_image_uri: "${{needs.init-env.outputs.container_registry_base_uri}}@${{ needs.build-docker-image.outputs.container_digest_arm64 }}"
 
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Log in to GH container registry
         uses: docker/login-action@v1
         with:
