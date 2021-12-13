@@ -1,0 +1,67 @@
+name: Build containers
+on:
+  push:
+    branches:
+      - main
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-docker-image:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      actions: none
+      checks: none
+      contents: read
+      deployments: none
+      issues: none
+      packages: write
+      pull-requests: none
+      repository-projects: none
+      security-events: none
+      statuses: none
+      # id-token: 'read'
+    outputs:
+      remote_branch_name: ${{ steps.get-remote-branch-name.outputs.remote_branch_name }}
+      container_registry_base_uri: ${{ steps.set-env.outputs.container_registry_base_uri }}
+      container_digest_amd64: ${{ steps.get-container-digest-amd64.outputs.container_digest }}
+      container_digest_arm64: ${{ steps.get-container-digest-arm64.outputs.container_digest }}
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to GH container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push to container registry
+        uses: docker/build-push-action@v2
+        # ./Dockerfile is in the upper directory
+        # ./wiki is the wikijs source code repo
+        with:
+          context: .
+          file: ./Dockerfile
+          ##build-args: |
+          ##  ARCH=${{ env.TO_BE_FIXED }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
