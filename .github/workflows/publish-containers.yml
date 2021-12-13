@@ -97,18 +97,18 @@ jobs:
       - name: "Get the digest of container (amd64)"
         id: get-container-digest-amd64
         run: |
-          skopeo inspect --raw docker://${{env.REGISTRY}}/${{env.IMAGE_NAME}} | \
+          skopeo inspect --raw docker://${{env.REGISTRY}}/${{env.IMAGE_NAME}}:main | \
             jq -r '.manifests[] | select(.platform .architecture=="amd64" and .platform .os=="linux") | .digest' > /tmp/container-digest-amd64
           echo "::set-output name=container_digest::$(cat /tmp/container-digest-amd64)"
       - name: "Get the digest of container (arm64)"
         id: get-container-digest-arm64
         run: |
-          skopeo inspect --raw docker://${{env.REGISTRY}}/${{env.IMAGE_NAME}} | \
+          skopeo inspect --raw docker://${{env.REGISTRY}}/${{env.IMAGE_NAME}}:main | \
             jq -r '.manifests[] | select(.platform .architecture=="arm64" and .platform .os=="linux") | .digest' > /tmp/container-digest-arm64
           echo "::set-output name=container_digest::$(cat /tmp/container-digest-arm64)"
 
   build-sbom-and-scanning:
-    needs: [build-docker-image]
+    needs: [init-env,build-docker-image]
     name: Build SBOM and image scanning
     runs-on: ubuntu-latest
     continue-on-error: true
