@@ -168,6 +168,44 @@ jobs:
         with:
            sarif_file: ${{matrix.arch}}-container-snyk-results.sarif
 
+      - name: Scan container with Trivy
+        uses: aquasecurity/trivy-action@master
+        id: scan-by-trivy
+        with:
+          image-ref: '${{matrix.platform_image_uri}}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: '${{matrix.arch}}-container-trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy SARIF report to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: '${{matrix.arch}}-container-trivy-results.sarif'
+          category: trivy-${{matrix.arch}}
+
+      - name: Scan container by Anchore
+        uses: anchore/scan-action@v3
+        # ## id: scan-by-anchore-${{matrix.arch}}
+        id: scan-by-anchore
+        with:
+          fail-build: false
+          image: "${{matrix.platform_image_uri}}"
+          acs-report-enable: true
+
+      - name: Rename results.sarif with architecture name
+        run: |
+          mv results.sarif ${{matrix.arch}}-container-anchore-results.sarif
+
+      - name: Upload Anchore SARIF report to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          # the steps outputs would contain './'
+          # ##sarif_file: ${{matrix.arch}}-${{ steps.scan-by-anchore-${{matrix.arch}}.outputs.sarif }}
+          # sarif_file: anchore-${{matrix.arch}}-${{ steps.scan-by-anchore.outputs.sarif }}
+          sarif_file: ./${{matrix.arch}}-container-anchore-results.sarif
+          category: anchore-${{matrix.arch}}
+
       - name: Inspect SARIF report(s)
         run: |
           echo ${{matrix.arch}}
