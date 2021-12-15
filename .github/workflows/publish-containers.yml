@@ -157,7 +157,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_API_TOKEN }}
         with:
           image: ${{matrix.platform_image_uri}}
-          args: --file=Dockerfile
+          args: --file=Dockerfile --app-vulns
 
       - name: Rename results.sarif with architecture name
         run: |
