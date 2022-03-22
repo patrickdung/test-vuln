@@ -151,7 +151,7 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           image: ${{matrix.platform_image_uri}}
-          output-file: container-sbom-${{ matrix.arch }}.spdx.json
+          artifact-name: container-sbom-${{ matrix.arch }}.spdx.json
 
       - uses: anchore/sbom-action/publish-sbom@v0
         with:
