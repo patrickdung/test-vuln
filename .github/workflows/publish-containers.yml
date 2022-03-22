@@ -162,7 +162,9 @@ jobs:
         id: scan-by-anchore-with-spdx-json
         with:
           fail-build: false
-          path: "./container-sbom-${{matrix.arch}}.spdx.json"
+          # seems can only provide path, and no option to provide a path with filename
+          #path: "./container-sbom-${{matrix.arch}}.spdx.json"
+          path: "."
           acs-report-enable: true
 
       - name: Rename results.sarif with architecture name
