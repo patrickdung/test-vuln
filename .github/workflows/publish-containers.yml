@@ -147,6 +147,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PUBLISH_TOKEN }}
 
+      - name: Anchore sbom-action
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{matrix.platform_image_uri}}
+          output-file: container-sbom-${{ matrix.arch }}.spdx.json
+
+      - uses: anchore/sbom-action/publish-sbom@v0
+        with:
+          sbom-artifact-match: ".*\\.spdx.json$"
+
       - name: Use Snyk to scan container
         continue-on-error: true
         uses: snyk/actions/docker@master
