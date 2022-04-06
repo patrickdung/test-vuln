@@ -169,7 +169,7 @@ jobs:
           #path: "."
           acs-report-enable: true
           #sbom: "${{ github.event.repository.name }}-sbom-${{matrix.arch}}.spdx.json"
-          sbom: "./container-sbom-${{ matrix.arch }}.spdx.json"
+          sbom: "container-sbom-${{ matrix.arch }}.spdx.json"
 
       - name: Rename results.sarif with architecture name
         run: |
