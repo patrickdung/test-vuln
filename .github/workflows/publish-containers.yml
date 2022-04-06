@@ -150,8 +150,11 @@ jobs:
       - name: Anchore sbom-action
         uses: anchore/sbom-action@v0
         with:
+          format: spdx-json
           image: ${{matrix.platform_image_uri}}
-          artifact-name: container-sbom-${{ matrix.arch }}.spdx.json
+          #artifact-name: container-sbom-${{ matrix.arch }}.spdx.json
+          #output-file: "${{ github.event.repository.name }}-sbom.spdx.json"
+          output-file: container-sbom-${{ matrix.arch }}.spdx.json
 
       - uses: anchore/sbom-action/publish-sbom@v0
         with:
@@ -164,8 +167,10 @@ jobs:
           fail-build: false
           # seems can only provide path, and no option to provide a path with filename
           #path: "./container-sbom-${{matrix.arch}}.spdx.json"
-          path: "."
+          #path: "."
           acs-report-enable: true
+          #sbom: "${{ github.event.repository.name }}-sbom.spdx.json"
+          sbom: container-sbom-${{ matrix.arch }}.spdx.json
 
       - name: Rename results.sarif with architecture name
         run: |
