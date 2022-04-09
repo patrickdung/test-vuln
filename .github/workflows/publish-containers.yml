@@ -164,7 +164,7 @@ jobs:
         uses: anchore/scan-action@v3
         id: scan-by-anchore-with-spdx-json
         with:
-          fail-build: true
+          fail-build: false
           # seems can only provide path, and no option to provide a path with filename
           #path: "./container-sbom-${{matrix.arch}}.spdx.json"
           #path: "."
