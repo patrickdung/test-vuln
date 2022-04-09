@@ -210,7 +210,8 @@ jobs:
         id: scan-by-trivy
         with:
           image-ref: '${{matrix.platform_image_uri}}'
-          format: 'template'
+          #format: 'template'
+          format: 'sarif'
           template: '@/contrib/sarif.tpl'
           output: '${{matrix.arch}}-container-trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
