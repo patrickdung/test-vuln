@@ -154,7 +154,7 @@ jobs:
           image: ${{matrix.platform_image_uri}}
           artifact-name: container-sbom-${{ matrix.arch }}.spdx.json
           #output-file: "${{ github.event.repository.name }}-${{matrix.arch}}-sbom.spdx.json"
-          output-file: ./
+          output-file: ./container-sbom-${{ matrix.arch }}.spdx.json
 
       - uses: anchore/sbom-action/publish-sbom@v0
         with:
