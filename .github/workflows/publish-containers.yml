@@ -298,8 +298,9 @@ jobs:
           image-repository: "${{env.IMAGE_NAME}}"
 
           # Tag of the image to scan, e.g. `1.0.0`
-          image-tag: "${{matrix.platform_image_uri_tag}}"
-          #image-tag: "main"
+          ## seems not supporting this
+          ##image-tag: "${{matrix.platform_image_uri_tag}}"
+          image-tag: "main"
 
           # Minimum CVEs with high severity to fail the job
           # Default: 0
