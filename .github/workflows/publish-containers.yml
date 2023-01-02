@@ -328,6 +328,12 @@ jobs:
           # Default: false
           debug: "true"
 
+      - name: Upload Neuvector reports to artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: /var/neuvector/scan_result.json
+          name: "Vulnerabilities report by Neuvector"
+
       - name: Inspect SARIF report(s)
         run: |
           echo ${{matrix.arch}}
@@ -339,4 +345,3 @@ jobs:
           name: "SARIF reports when containers are built"
           path: |
             ./*.sarif
-            /var/neuvector/scan_result.json
