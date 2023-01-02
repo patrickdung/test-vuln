@@ -331,6 +331,7 @@ jobs:
       - name: Upload Neuvector reports to artifacts
         uses: actions/upload-artifact@v2
         with:
+          # Is the file inside docker or output to host?
           path: /var/neuvector/scan_result.json
           name: "Vulnerabilities report by Neuvector"
 
