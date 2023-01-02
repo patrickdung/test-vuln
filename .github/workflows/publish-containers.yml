@@ -298,8 +298,8 @@ jobs:
           image-repository: "${{env.IMAGE_NAME}}"
 
           # Tag of the image to scan, e.g. `1.0.0`
-          #image-tag: "${{matrix.platform_image_uri_tag}}"
-          image-tag: "main"
+          image-tag: "${{matrix.platform_image_uri_tag}}"
+          #image-tag: "main"
 
           # Minimum CVEs with high severity to fail the job
           # Default: 0
@@ -320,7 +320,8 @@ jobs:
 
           # Output format, one of: `text`, `json`, `csv`
           # Default: text
-          output: ""
+          output: "json"
+          #/var/neuvector/scan_result.json 
 
           # Debug mode, on of: `true`, `false`
           # Default: false
@@ -337,3 +338,4 @@ jobs:
           name: "SARIF reports when containers are built"
           path: |
             ./*.sarif
+            /var/neuvector/scan_result.json
