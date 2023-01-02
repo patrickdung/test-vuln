@@ -244,35 +244,82 @@ jobs:
 #          sarif_file: ./${{matrix.arch}}-container-anchore-results.sarif
 #          category: anchore-${{matrix.arch}}
 
-      - name: Sysdig Secure Inline Scan
-        id: scan
-        uses: sysdiglabs/scan-action@768d7626a14897e0948ea89c8437dd46a814b163
-        with:
-          # Tag of the image to analyse.
-          image-tag: "${{matrix.platform_image_uri}}"
-          # API token for Sysdig Scanning auth
-          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN}}
-          # Sysdig secure endpoint. Please read: https://docs.sysdig.com/en/docs/administration/saas-regions-and-ip-ranges/
-          # US-East https://secure.sysdig.com
-          # US-West https://us2.app.sysdig.com
-          # EU      https://eu1.app.sysdig.com
-          sysdig-secure-url: https://app.au1.sysdig.com
-          dockerfile-path: ./Dockerfile
-          input-type: docker-daemon
-          ignore-failed-scan: true
-          # Sysdig inline scanner requires privileged rights
-          run-as-user: root
+#      - name: Sysdig Secure Inline Scan
+#        id: scan
+#        uses: sysdiglabs/scan-action@768d7626a14897e0948ea89c8437dd46a814b163
+#        with:
+#          # Tag of the image to analyse.
+#          image-tag: "${{matrix.platform_image_uri}}"
+#          # API token for Sysdig Scanning auth
+#          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN}}
+#          # Sysdig secure endpoint. Please read: https://docs.sysdig.com/en/docs/administration/saas-regions-and-ip-ranges/
+#          # US-East https://secure.sysdig.com
+#          # US-West https://us2.app.sysdig.com
+#          # EU      https://eu1.app.sysdig.com
+#          sysdig-secure-url: https://app.au1.sysdig.com
+#          dockerfile-path: ./Dockerfile
+#          input-type: docker-daemon
+#          ignore-failed-scan: true
+#          # Sysdig inline scanner requires privileged rights
+#          run-as-user: root
 
-      - name: Rename Sysdig sarif with architecture name
-        run: |
-          mv ${{ steps.scan.outputs.sarifReport }} ${{matrix.arch}}-container-sysdig-results.sarif
+#      - name: Rename Sysdig sarif with architecture name
+#        run: |
+#          mv ${{ steps.scan.outputs.sarifReport }} ${{matrix.arch}}-container-sysdig-results.sarif
 
-      - name: Upload Sysdig SARIF report to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
-        if: always()
+#      - name: Upload Sysdig SARIF report to GitHub Security tab
+#        uses: github/codeql-action/upload-sarif@v1
+#        if: always()
+#        with:
+#          sarif_file: '${{matrix.arch}}-container-sysdig-results.sarif'
+#          category: sysdig-${{matrix.arch}}
+
+      - name: scan with neuvector-scanner
+        uses: neuvector/scan-action@main
         with:
-          sarif_file: '${{matrix.arch}}-container-sysdig-results.sarif'
-          category: sysdig-${{matrix.arch}}
+          # Registry of the image to scan, e.g. `https://registry.organization.com/`
+          # Default:
+          #image-registry: "${{matrix.platform_image_uri}}"
+          image-registry: "ghcr.io"
+
+          # Username for the registry authentication
+          # Default:
+          image-registry-username: ""
+
+          # Password for the registry authentication
+          # Default:
+          image-registry-password: ""
+
+          # Repository of the image to scan, e.g. `org/image-name`
+          image-repository: "patrickdung/test-vuln"
+
+          # Tag of the image to scan, e.g. `1.0.0`
+          image-tag: "main"
+
+          # Minimum CVEs with high severity to fail the job
+          # Default: 0
+          min-high-cves-to-fail: ""
+
+          # Minimum CVEs with medium severity to fail the job
+          # Default: 0
+          min-medium-cves-to-fail: ""
+
+          # Comma-separated list of CVE names that make the job fail, e.g.
+          # `CVE-2021-4160,CVE-2022-0778
+          # Default:
+          cve-names-to-fail: ""
+
+          # NeuVector Scanner image to use for scanning
+          # Default: neuvector/scanner:latest
+          nv-scanner-image: ""
+
+          # Output format, one of: `text`, `json`, `csv`
+          # Default: text
+          output: ""
+
+          # Debug mode, on of: `true`, `false`
+          # Default: false
+          debug: "true"
 
       - name: Inspect SARIF report(s)
         run: |
