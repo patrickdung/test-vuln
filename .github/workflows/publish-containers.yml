@@ -283,7 +283,7 @@ jobs:
         with:
           # Registry of the image to scan, e.g. `https://registry.organization.com/`
           # Default:
-          image-registry: "${{matrix.platform_image_uri_without_tag}}"
+          image-registry: "https://${{env.REGISTRY}}/"
           #image-registry: "ghcr.io"
 
           # Username for the registry authentication
@@ -295,10 +295,11 @@ jobs:
           image-registry-password: ""
 
           # Repository of the image to scan, e.g. `org/image-name`
-          image-repository: ""
+          image-repository: "${{env.IMAGE_NAME}}"
 
           # Tag of the image to scan, e.g. `1.0.0`
-          image-tag: "${{matrix.platform_image_uri_tag}}"
+          #image-tag: "${{matrix.platform_image_uri_tag}}"
+          image-tag: "main"
 
           # Minimum CVEs with high severity to fail the job
           # Default: 0
